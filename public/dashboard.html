@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard – NexUse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- GLOBAL NAVBAR -->
+  <nav class="navbar" id="mainNavbar">
+    <a href="index.html" class="navbar-brand" id="navBrand">
+      <svg class="navbar-brand-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 22h8l10 26h28l8-18H30" stroke="#1a5cff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="36" cy="60" r="6" fill="#1a5cff"/>
+        <circle cx="60" cy="60" r="6" fill="#1a5cff"/>
+        <path d="M48 38c-3-5-10-5-13 0-2.5 4 0 10 6 14l7 5 7-5c6-4 8.5-10 6-14-3-5-10-5-13 0z" fill="#12b76a"/>
+      </svg>
+      <span><span class="nex">Nex</span><span class="use">Use</span></span>
+    </a>
+
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html" id="nav-home">Home</a></li>
+      <li><a href="marketplace.html" id="nav-marketplace">Marketplace</a></li>
+      <li><a href="donation.html" id="nav-donation-requests">Donation Requests</a></li>
+      <li id="nav-dashboard-li" class="hidden"><a href="dashboard.html" id="nav-dashboard">Dashboard</a></li>
+    </ul>
+
+    <div class="navbar-actions" id="navActions">
+      <!-- Logged-out state -->
+      <div id="navLoggedOut" class="flex gap-8">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+      </div>
+      <!-- Logged-in state -->
+      <div id="navLoggedIn" class="hidden flex gap-12">
+        <div class="notif-wrapper">
+          <button class="notif-bell-btn" id="notifBellBtn" title="Notifications">
+            🔔
+            <span class="notif-count-badge hidden" id="notifCountBadge">0</span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-dropdown-head">
+              <span>Notifications</span>
+              <a href="#" id="markAllReadBtn">Mark all read</a>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content" id="view-dashboard">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+      <div class="dash-profile-avatar" id="dashAvatarEl">-</div>
+      <div class="dash-profile-name" id="dashNameEl">-</div>
+      <div class="dash-profile-role" id="dashRoleEl">-</div>
+      <div class="dash-profile-rating" id="dashRatingEl">-</div>
+
+      <nav class="dash-nav">
+        <button class="dash-nav-item active" onclick="switchDashTab('activity')" id="dashTab-activity">🛒 My Activity (Buy/Rent/Receive)</button>
+        <button class="dash-nav-item" onclick="switchDashTab('storefront')" id="dashTab-storefront">🏪 My Storefront (Sell/Lend/Donate)</button>
+        <button class="dash-nav-item" onclick="switchDashTab('profile')" id="dashTab-profile">⚙️ Profile Settings</button>
+        <div id="adminDeskBtn-wrapper" class="hidden">
+          <div style="border-top:1px solid var(--border);margin:12px 0;"></div>
+          <a href="admin.html" class="dash-nav-item" style="color:#ef4444;" id="dashTab-admin">🛡️ Administrator Desk</a>
+        </div>
+        <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:8px;">
+          <button class="dash-nav-item" id="dashLogoutBtn">🚪 Log Out</button>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Main content area -->
+    <div class="dash-main">
+
+      <!-- TAB: MY ACTIVITY -->
+      <div id="dashView-activity">
+        <div class="dash-page-title">My Consumption Activity</div>
+        <div class="dash-page-sub">Track your cart checkout, wishlist, purchases, active rentals, and donation receivership.</div>
+
+        <div class="dash-row">
+          <div class="dash-panel">
+            <div class="dash-panel-title">🛒 My Shopping Cart</div>
+            <div id="dashCart"><div class="dash-empty">Cart is empty.</div></div>
+          </div>
+          <div class="dash-panel">
+            <div class="dash-panel-title">❤️ My Wishlist</div>
+            <div id="dashWishlist"><div class="dash-empty">Wishlist is empty.</div></div>
+          </div>
+        </div>
+
+        <div class="dash-panel-full">
+          <div class="dash-panel-title">📦 Transactions &amp; Rental Tracking</div>
+          <div id="dashTransactions"><div class="dash-empty">No purchase or rental logs yet.</div></div>
+        </div>
+
+        <div class="dash-panel-full">
+          <div class="dash-panel-title">💝 Donation Receivership Tracker</div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;">Review active pledges made by donors for your donation requests.</p>
+          <div id="dashDonationReceivership"><div class="dash-empty">No active donor pledges received yet.</div></div>
+        </div>
+      </div>
+
+      <!-- TAB: MY STOREFRONT -->
+      <div id="dashView-storefront" class="hidden">
+        <div class="dash-page-title">My Storefront</div>
+        <div class="dash-page-sub">Manage your active listings for sale, rental, sharing, and donations.</div>
+
+        <div class="flex-between" style="margin-bottom:20px;">
+          <span></span>
+          <button class="btn btn-primary btn-md" onclick="openListingModal()">+ Add New Listing</button>
+        </div>
+        <div class="dash-panel-full">
+          <div class="dash-panel-title">🛍️ Active Listings</div>
+          <div id="dashMyListings"><div class="dash-empty">You have no active listings.</div></div>
+        </div>
+
+        <div class="dash-panel-full">
+          <div class="dash-panel-title">📥 Incoming Requests &amp; Orders</div>
+          <div id="dashIncomingRequests"><div class="dash-empty">No incoming orders or requests.</div></div>
+        </div>
+      </div>
+
+      <!-- TAB: PROFILE -->
+      <div id="dashView-profile" class="hidden">
+        <div class="dash-page-title">Profile Settings</div>
+        <div class="dash-page-sub">Update your personal information and account details.</div>
+        <div class="dash-panel-full" style="max-width:520px;">
+          <form id="profileEditForm">
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="profileName">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="profileEmail">
+              </div>
+            </div>
+            <div class="form-group mt-16">
+              <label class="form-label">City / Location</label>
+              <input type="text" class="form-control" id="profileLocation">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" id="profilePhone">
+            </div>
+            <button type="submit" class="btn btn-primary btn-md">Save Changes</button>
+          </form>
+        </div>
+
+        <!-- Dispute Reporting -->
+        <div class="dash-panel-full mt-16" style="max-width:520px;">
+          <div class="dash-panel-title">⚠️ Report a Dispute</div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:16px;">Report suspicious activity, damaged items, or transaction problems.</p>
+          <button class="btn btn-outline btn-md" onclick="openDisputeModal()" style="color:#ef4444;border-color:#ef4444;">File a Dispute Report</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <!-- Dispute Modal -->
+  <dialog class="modal" id="disputeModal">
+    <div class="modal-header">
+      <span class="modal-title">File a Dispute</span>
+      <button class="modal-close-btn" onclick="document.getElementById('disputeModal').close()">&times;</button>
+    </div>
+    <form id="disputeForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Reason</label>
+          <select class="form-control" id="dspReason" required>
+            <option value="Damaged Item">Damaged Return Item</option>
+            <option value="Non-Return">Rented Item Not Returned</option>
+            <option value="Not as Described">Item Not As Described</option>
+            <option value="Fraud">Suspicious Activity / Fraud</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reported User</label>
+          <select class="form-control" id="dspUser" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" id="dspDescription" placeholder="Describe the incident in detail…" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline btn-md" onclick="document.getElementById('disputeModal').close()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-md" style="background:#ef4444;">File Dispute</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toastContainer"></div>
+
+  <script src="js/common.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

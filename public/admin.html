@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – NexUse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- GLOBAL NAVBAR -->
+  <nav class="navbar" id="mainNavbar">
+    <a href="index.html" class="navbar-brand" id="navBrand">
+      <svg class="navbar-brand-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 22h8l10 26h28l8-18H30" stroke="#1a5cff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="36" cy="60" r="6" fill="#1a5cff"/>
+        <circle cx="60" cy="60" r="6" fill="#1a5cff"/>
+        <path d="M48 38c-3-5-10-5-13 0-2.5 4 0 10 6 14l7 5 7-5c6-4 8.5-10 6-14-3-5-10-5-13 0z" fill="#12b76a"/>
+      </svg>
+      <span><span class="nex">Nex</span><span class="use">Use</span></span>
+    </a>
+
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html" id="nav-home">Home</a></li>
+      <li><a href="marketplace.html" id="nav-marketplace">Marketplace</a></li>
+      <li><a href="donation.html" id="nav-donation-requests">Donation Requests</a></li>
+      <li id="nav-dashboard-li" class="hidden"><a href="dashboard.html" id="nav-dashboard">Dashboard</a></li>
+    </ul>
+
+    <div class="navbar-actions" id="navActions">
+      <!-- Logged-out state -->
+      <div id="navLoggedOut" class="flex gap-8">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+      </div>
+      <!-- Logged-in state -->
+      <div id="navLoggedIn" class="hidden flex gap-12">
+        <div class="notif-wrapper">
+          <button class="notif-bell-btn" id="notifBellBtn" title="Notifications">
+            🔔
+            <span class="notif-count-badge hidden" id="notifCountBadge">0</span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-dropdown-head">
+              <span>Notifications</span>
+              <a href="#" id="markAllReadBtn">Mark all read</a>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content" id="view-dashboard">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar">
+      <div class="dash-profile-avatar" style="background:var(--red);">A</div>
+      <div class="dash-profile-name">NexUse Admin</div>
+      <div class="dash-profile-role">System Administrator</div>
+      <div class="dash-profile-rating" style="color:var(--text-secondary);">Oversight &amp; Moderation</div>
+
+      <nav class="dash-nav">
+        <a href="dashboard.html" class="dash-nav-item">👤 Back to Dashboard</a>
+        <button class="dash-nav-item active" id="dashTab-admin">🛡️ Administrator Desk</button>
+      </nav>
+    </div>
+
+    <!-- Main content area -->
+    <div class="dash-main">
+      <div id="dashView-admin">
+        <div class="dash-page-title">Administrator Desk</div>
+        <div class="dash-page-sub">System analytics, user management, listings oversight, and disputes resolution.</div>
+
+        <div class="dash-stat-row">
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon stat-blue">👥</div>
+            <div class="dash-stat-value" id="adminStatUsers">0</div>
+            <div class="dash-stat-label">Total Users</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon stat-green">📋</div>
+            <div class="dash-stat-value" id="adminStatListings">0</div>
+            <div class="dash-stat-label">Active Listings</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon stat-amber">🔁</div>
+            <div class="dash-stat-value" id="adminStatTxns">0</div>
+            <div class="dash-stat-label">Transactions</div>
+          </div>
+          <div class="dash-stat-card">
+            <div class="dash-stat-icon stat-purple">⚖️</div>
+            <div class="dash-stat-value" id="adminStatDisputes">0</div>
+            <div class="dash-stat-label">Open Disputes</div>
+          </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="dash-panel-full">
+          <div class="dash-panel-title">📊 Transaction Type Distribution</div>
+          <div class="chart-bars" id="adminChart"></div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="dash-panel-full">
+          <div class="flex-between mb-16">
+            <div class="dash-panel-title" style="margin-bottom:0;">👥 All Users</div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead><tr>
+                <th>Name</th><th>Username</th><th>Role</th><th>Location</th><th>Rating</th><th>Verified</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="adminUsersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Disputes Table -->
+        <div class="dash-panel-full">
+          <div class="dash-panel-title mb-16">⚖️ Disputes &amp; Complaints</div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead><tr>
+                <th>ID</th><th>Filed By</th><th>Against</th><th>Reason</th><th>Status</th><th>Actions</th>
+              </tr></thead>
+              <tbody id="adminDisputesTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Broadcast -->
+        <div class="dash-panel-full" style="max-width:520px;">
+          <div class="dash-panel-title">📢 System Broadcast</div>
+          <form id="adminBroadcastForm">
+            <div class="form-group">
+              <label class="form-label">Target Audience</label>
+              <select class="form-control" id="broadcastTarget">
+                <option value="all">All Users</option>
+                <option value="buyer">Buyers</option>
+                <option value="seller">Sellers</option>
+                <option value="lender">Lenders</option>
+                <option value="renter">Renters</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Title</label>
+              <input type="text" class="form-control" id="broadcastTitle" placeholder="Announcement title" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea class="form-control" id="broadcastMsg" placeholder="Write your system message…" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-md">Send Broadcast</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <!-- Admin Resolve Dispute Modal -->
+  <dialog class="modal" id="resolveDisputeModal">
+    <div class="modal-header">
+      <span class="modal-title">Resolve Dispute</span>
+      <button class="modal-close-btn" onclick="document.getElementById('resolveDisputeModal').close()">&times;</button>
+    </div>
+    <form id="resolveDisputeForm">
+      <input type="hidden" id="rdspId">
+      <div class="modal-body">
+        <div style="background:var(--bg);border-radius:10px;padding:14px;margin-bottom:16px;">
+          <div class="text-xs text-muted fw-700" style="margin-bottom:4px;">COMPLAINT</div>
+          <div id="rdspReason" style="font-weight:700;margin-bottom:6px;"></div>
+          <div id="rdspDesc" style="font-size:0.85rem;color:var(--text-secondary);"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Resolution Action</label>
+          <select class="form-control" id="rdspAction" required>
+            <option value="Warning issued to reported user">Warning issued to reported user</option>
+            <option value="Penalty charged to renter">Penalty charged to renter</option>
+            <option value="Item verified returned in good condition">Item verified returned in good condition</option>
+            <option value="Dismissed – insufficient evidence">Dismissed – insufficient evidence</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea class="form-control" id="rdspNotes" placeholder="Record resolution details…" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline btn-md" onclick="document.getElementById('resolveDisputeModal').close()">Cancel</button>
+        <button type="submit" class="btn btn-green btn-md">Confirm Resolution</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Admin Edit User Modal -->
+  <dialog class="modal" id="adminEditUserModal">
+    <div class="modal-header">
+      <span class="modal-title">Moderate User</span>
+      <button class="modal-close-btn" onclick="document.getElementById('adminEditUserModal').close()">&times;</button>
+    </div>
+    <form id="adminEditUserForm">
+      <input type="hidden" id="aeUserId">
+      <div class="modal-body">
+        <div class="form-row">
+          <div>
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" id="aeName" required>
+          </div>
+          <div>
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" id="aeEmail" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Rating (1–5)</label>
+            <input type="number" class="form-control" id="aeRating" min="1" max="5" step="0.1" required>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding-top:26px;">
+            <input type="checkbox" id="aeVerified" style="width:18px;height:18px;accent-color:var(--green);">
+            <label for="aeVerified" style="font-weight:600;font-size:0.85rem;cursor:pointer;">Account Verified</label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline btn-md" onclick="document.getElementById('adminEditUserModal').close()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-md">Save Changes</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toastContainer"></div>
+
+  <script src="js/common.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

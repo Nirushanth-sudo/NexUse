@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join NexUse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- GLOBAL NAVBAR -->
+  <nav class="navbar" id="mainNavbar">
+    <a href="index.html" class="navbar-brand" id="navBrand">
+      <svg class="navbar-brand-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 22h8l10 26h28l8-18H30" stroke="#1a5cff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="36" cy="60" r="6" fill="#1a5cff"/>
+        <circle cx="60" cy="60" r="6" fill="#1a5cff"/>
+        <path d="M48 38c-3-5-10-5-13 0-2.5 4 0 10 6 14l7 5 7-5c6-4 8.5-10 6-14-3-5-10-5-13 0z" fill="#12b76a"/>
+      </svg>
+      <span><span class="nex">Nex</span><span class="use">Use</span></span>
+    </a>
+
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html" id="nav-home">Home</a></li>
+      <li><a href="marketplace.html" id="nav-marketplace">Marketplace</a></li>
+      <li><a href="donation.html" id="nav-donation-requests">Donation Requests</a></li>
+      <li id="nav-dashboard-li" class="hidden"><a href="dashboard.html" id="nav-dashboard">Dashboard</a></li>
+    </ul>
+
+    <div class="navbar-actions" id="navActions">
+      <!-- Logged-out state -->
+      <div id="navLoggedOut" class="flex gap-8">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+      </div>
+      <!-- Logged-in state -->
+      <div id="navLoggedIn" class="hidden flex gap-12">
+        <div class="notif-wrapper">
+          <button class="notif-bell-btn" id="notifBellBtn" title="Notifications">
+            🔔
+            <span class="notif-count-badge hidden" id="notifCountBadge">0</span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-dropdown-head">
+              <span>Notifications</span>
+              <a href="#" id="markAllReadBtn">Mark all read</a>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content" id="view-register">
+    <div class="auth-card">
+      <h2>Join NexUse</h2>
+      <p class="auth-sub">Become part of a sustainable, sharing community</p>
+      
+      <form id="registerForm">
+        <div class="form-row">
+          <div>
+            <label class="form-label">Full Name *</label>
+            <input type="text" class="form-control" id="regName" placeholder="John Doe" required>
+          </div>
+          <div>
+            <label class="form-label">Email Address *</label>
+            <input type="email" class="form-control" id="regEmail" placeholder="john@example.com" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Password *</label>
+            <input type="password" class="form-control" id="regPassword" placeholder="At least 6 chars" required>
+          </div>
+          <div>
+            <label class="form-label">Phone Number</label>
+            <input type="tel" class="form-control" id="regPhone" placeholder="+15551234">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">City / Location *</label>
+          <input type="text" class="form-control" id="regCity" placeholder="e.g. New York, Chicago" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Street Address</label>
+          <textarea class="form-control" id="regAddress" placeholder="123 Main St, Apt 4B…"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg w-full" style="border-radius:10px;">Create Account</button>
+      </form>
+      
+      <p class="auth-footer mt-16">Already registered? <a href="login.html">Sign in here</a></p>
+    </div>
+  </main>
+
+  <div id="toastContainer"></div>
+
+  <script src="js/common.js"></script>
+  <script>
+    document.getElementById('registerForm').onsubmit = (e) => {
+      e.preventDefault();
+      
+      const payload = {
+        name: document.getElementById('regName').value,
+        email: document.getElementById('regEmail').value,
+        password: document.getElementById('regPassword').value,
+        phone: document.getElementById('regPhone').value,
+        location: document.getElementById('regCity').value,
+        address: document.getElementById('regAddress').value
+      };
+
+      fetch('api/auth/register.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showToast("Success", "Account created successfully! You can now log in.", "success");
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1200);
+        } else {
+          showToast("Error", data.message || "Registration failed", "error");
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        showToast("Error", "Server connection failed.", "error");
+      });
+    };
+  </script>
+</body>
+</html>

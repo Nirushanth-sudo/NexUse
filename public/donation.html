@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donation Requests – NexUse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- GLOBAL NAVBAR -->
+  <nav class="navbar" id="mainNavbar">
+    <a href="index.html" class="navbar-brand" id="navBrand">
+      <svg class="navbar-brand-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 22h8l10 26h28l8-18H30" stroke="#1a5cff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="36" cy="60" r="6" fill="#1a5cff"/>
+        <circle cx="60" cy="60" r="6" fill="#1a5cff"/>
+        <path d="M48 38c-3-5-10-5-13 0-2.5 4 0 10 6 14l7 5 7-5c6-4 8.5-10 6-14-3-5-10-5-13 0z" fill="#12b76a"/>
+      </svg>
+      <span><span class="nex">Nex</span><span class="use">Use</span></span>
+    </a>
+
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html" id="nav-home">Home</a></li>
+      <li><a href="marketplace.html" id="nav-marketplace">Marketplace</a></li>
+      <li><a href="donation.html" id="nav-donation-requests">Donation Requests</a></li>
+      <li id="nav-dashboard-li" class="hidden"><a href="dashboard.html" id="nav-dashboard">Dashboard</a></li>
+    </ul>
+
+    <div class="navbar-actions" id="navActions">
+      <!-- Logged-out state -->
+      <div id="navLoggedOut" class="flex gap-8">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+      </div>
+      <!-- Logged-in state -->
+      <div id="navLoggedIn" class="hidden flex gap-12">
+        <div class="notif-wrapper">
+          <button class="notif-bell-btn" id="notifBellBtn" title="Notifications">
+            🔔
+            <span class="notif-count-badge hidden" id="notifCountBadge">0</span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-dropdown-head">
+              <span>Notifications</span>
+              <a href="#" id="markAllReadBtn">Mark all read</a>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content" id="view-donation-requests">
+    <div class="donation-page-hero">
+      <h1>Support Your Neighbors</h1>
+      <p>Browse community donation needs or create a request if you need support with essential items.</p>
+      <a href="login.html" class="btn btn-primary btn-md" id="donPageSignInBtn">Sign In to Request Item</a>
+      <button class="btn btn-primary btn-md hidden" id="donPageCreateBtn" onclick="openDonationRequestModal()">+ Create Donation Request</button>
+    </div>
+
+    <div class="donation-layout">
+      <!-- Sidebar Filters -->
+      <aside class="marketplace-sidebar">
+        <div class="sidebar-heading">Filters</div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Category</div>
+          <div class="checkbox-group" id="donFilterCategory">
+            <label class="checkbox-label"><input type="checkbox" value="Electronics"> Electronics</label>
+            <label class="checkbox-label"><input type="checkbox" value="Furniture"> Furniture</label>
+            <label class="checkbox-label"><input type="checkbox" value="Books"> Books</label>
+            <label class="checkbox-label"><input type="checkbox" value="Clothing"> Clothing</label>
+            <label class="checkbox-label"><input type="checkbox" value="Tools"> Tools</label>
+            <label class="checkbox-label"><input type="checkbox" value="Other"> Other</label>
+          </div>
+        </div>
+        <div class="sidebar-section">
+          <div class="sidebar-section-title">Location</div>
+          <select class="form-control" id="donFilterLocation" style="border-radius:8px;font-size:0.82rem;padding:8px 10px;">
+            <option value="">All Locations</option>
+          </select>
+        </div>
+        <button class="sidebar-btn-reset" id="donResetFiltersBtn">Reset All Filters</button>
+      </aside>
+
+      <!-- Main content -->
+      <div class="donation-main">
+        <div class="donation-cards-grid" id="donCardsGrid">
+          <!-- dynamic donation cards -->
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Donation Request Modal -->
+  <dialog class="modal" id="donationReqModal">
+    <div class="modal-header">
+      <span class="modal-title">Create Donation Request</span>
+      <button class="modal-close-btn" onclick="document.getElementById('donationReqModal').close()">&times;</button>
+    </div>
+    <form id="donationReqForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">What do you need? *</label>
+          <input type="text" class="form-control" id="drTitle" placeholder="e.g. Laptops for Kids Charity Program" required>
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Category *</label>
+            <select class="form-control" id="drCategory" required>
+              <option value="Electronics">Electronics</option>
+              <option value="Books">Books</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Tools">Tools</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Your Location *</label>
+            <input type="text" class="form-control" id="drLocation" placeholder="e.g. Chicago" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Item Needed (specific type) *</label>
+          <input type="text" class="form-control" id="drItemType" placeholder="e.g. LAPTOPS / TABLETS" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Explain your need *</label>
+          <textarea class="form-control" id="drDescription" placeholder="Describe why you need it, quantity, condition acceptable…" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline btn-md" onclick="document.getElementById('donationReqModal').close()">Cancel</button>
+        <button type="submit" class="btn btn-green btn-md">Post Request</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toastContainer"></div>
+
+  <script src="js/common.js"></script>
+  <script src="js/donation.js"></script>
+</body>
+</html>

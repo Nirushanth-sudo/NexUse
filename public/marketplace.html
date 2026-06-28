@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketplace – NexUse</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- GLOBAL NAVBAR -->
+  <nav class="navbar" id="mainNavbar">
+    <a href="index.html" class="navbar-brand" id="navBrand">
+      <svg class="navbar-brand-logo" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 22h8l10 26h28l8-18H30" stroke="#1a5cff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="36" cy="60" r="6" fill="#1a5cff"/>
+        <circle cx="60" cy="60" r="6" fill="#1a5cff"/>
+        <path d="M48 38c-3-5-10-5-13 0-2.5 4 0 10 6 14l7 5 7-5c6-4 8.5-10 6-14-3-5-10-5-13 0z" fill="#12b76a"/>
+      </svg>
+      <span><span class="nex">Nex</span><span class="use">Use</span></span>
+    </a>
+
+    <ul class="navbar-links" id="navLinks">
+      <li><a href="index.html" id="nav-home">Home</a></li>
+      <li><a href="marketplace.html" id="nav-marketplace">Marketplace</a></li>
+      <li><a href="donation.html" id="nav-donation-requests">Donation Requests</a></li>
+      <li id="nav-dashboard-li" class="hidden"><a href="dashboard.html" id="nav-dashboard">Dashboard</a></li>
+    </ul>
+
+    <div class="navbar-actions" id="navActions">
+      <!-- Logged-out state -->
+      <div id="navLoggedOut" class="flex gap-8">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+      </div>
+      <!-- Logged-in state -->
+      <div id="navLoggedIn" class="hidden flex gap-12">
+        <div class="notif-wrapper">
+          <button class="notif-bell-btn" id="notifBellBtn" title="Notifications">
+            🔔
+            <span class="notif-count-badge hidden" id="notifCountBadge">0</span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-dropdown-head">
+              <span>Notifications</span>
+              <a href="#" id="markAllReadBtn">Mark all read</a>
+            </div>
+            <div class="notif-list" id="notifList"></div>
+          </div>
+        </div>
+        <button class="btn btn-outline btn-sm" id="logoutBtn">Log out</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content" id="view-marketplace">
+    <!-- Sidebar Filters -->
+    <aside class="marketplace-sidebar">
+      <div class="sidebar-heading">Filters</div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Category</div>
+        <div class="checkbox-group" id="mktFilterCategory">
+          <label class="checkbox-label"><input type="checkbox" value="Electronics"> Electronics</label>
+          <label class="checkbox-label"><input type="checkbox" value="Furniture"> Furniture</label>
+          <label class="checkbox-label"><input type="checkbox" value="Books"> Books</label>
+          <label class="checkbox-label"><input type="checkbox" value="Clothing"> Clothing</label>
+          <label class="checkbox-label"><input type="checkbox" value="Tools"> Tools</label>
+          <label class="checkbox-label"><input type="checkbox" value="Sports"> Sports</label>
+          <label class="checkbox-label"><input type="checkbox" value="Other"> Other</label>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Listing Type</div>
+        <div class="radio-group">
+          <label class="radio-label"><input type="radio" name="mktType" value="" checked> All</label>
+          <label class="radio-label"><input type="radio" name="mktType" value="buy"> For Sale</label>
+          <label class="radio-label"><input type="radio" name="mktType" value="rent"> For Rent</label>
+          <label class="radio-label"><input type="radio" name="mktType" value="share"> Free Sharing</label>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Condition</div>
+        <div class="radio-group">
+          <label class="radio-label"><input type="radio" name="mktCond" value="" checked> All</label>
+          <label class="radio-label"><input type="radio" name="mktCond" value="New"> New</label>
+          <label class="radio-label"><input type="radio" name="mktCond" value="Like New"> Like New</label>
+          <label class="radio-label"><input type="radio" name="mktCond" value="Good"> Good</label>
+          <label class="radio-label"><input type="radio" name="mktCond" value="Fair"> Fair</label>
+          <label class="radio-label"><input type="radio" name="mktCond" value="Poor"> Poor</label>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-title">Location</div>
+        <select class="form-control" id="mktFilterLocation" style="border-radius:8px;font-size:0.82rem;padding:8px 10px;">
+          <option value="">All Locations</option>
+        </select>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="marketplace-main">
+      <div class="marketplace-search-row">
+        <div class="search-bar" style="flex:1;">
+          <span class="search-bar-icon">🔍</span>
+          <input type="text" id="mktSearchInput" placeholder="Search products, tools, furniture…">
+        </div>
+        <button class="btn btn-primary btn-md" id="mktSearchBtn">Search</button>
+        <button class="btn btn-green btn-md" id="mktAddListingBtn" onclick="openListingModal()">+ List Item</button>
+      </div>
+      <div class="products-grid" id="mktProductsGrid">
+        <!-- dynamic listings -->
+      </div>
+    </div>
+  </main>
+
+  <!-- MODALS -->
+  <!-- Product Detail Modal -->
+  <dialog class="modal" id="productDetailModal">
+    <div class="modal-header">
+      <span class="modal-title" id="pdTitle">Item Details</span>
+      <button class="modal-close-btn" id="pdClose">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-modal-image-area" id="pdImageArea">
+        <span id="pdEmoji" style="font-size:4rem;">📦</span>
+        <span style="position:absolute;top:12px;left:12px;" id="pdBadge"></span>
+      </div>
+      <div class="detail-meta-grid">
+        <div class="detail-meta-item">
+          <div class="detail-meta-label">Category</div>
+          <div class="detail-meta-value" id="pdCategory">-</div>
+        </div>
+        <div class="detail-meta-item">
+          <div class="detail-meta-label">Condition</div>
+          <div class="detail-meta-value" id="pdCondition">-</div>
+        </div>
+        <div class="detail-meta-item">
+          <div class="detail-meta-label">Location</div>
+          <div class="detail-meta-value" id="pdLocation">-</div>
+        </div>
+        <div class="detail-meta-item">
+          <div class="detail-meta-label">Listed By</div>
+          <div class="detail-meta-value" id="pdOwner">-</div>
+        </div>
+      </div>
+      <div style="margin-bottom:16px;">
+        <div style="font-size:0.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:4px;font-weight:700;">Description</div>
+        <p id="pdDescription" style="font-size:0.88rem;color:var(--text-secondary);line-height:1.6;"></p>
+      </div>
+      <div id="pdPrice" style="font-size:1.5rem;font-weight:800;"></div>
+      <!-- Rental date picker -->
+      <div id="pdRentalDates" class="hidden" style="margin-top:16px;padding:16px;background:var(--bg);border-radius:10px;">
+        <div class="form-row" style="margin-bottom:0;">
+          <div>
+            <label class="form-label">Start Date</label>
+            <input type="date" class="form-control" id="pdStartDate">
+          </div>
+          <div>
+            <label class="form-label">Return Date</label>
+            <input type="date" class="form-control" id="pdReturnDate">
+          </div>
+        </div>
+      </div>
+      <!-- Pledge note -->
+      <div id="pdPledgeNote" class="hidden" style="margin-top:16px;">
+        <label class="form-label">Note to Receiver (optional)</label>
+        <input type="text" class="form-control" id="pdPledgeNoteInput" placeholder="e.g. I can drop it off Saturday…">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-md" id="pdChatBtn">💬 Message Owner</button>
+      <button class="btn btn-outline btn-md" id="pdWishBtn">❤️ Wishlist</button>
+      <button class="btn btn-primary btn-md" id="pdActionBtn">View Details</button>
+    </div>
+  </dialog>
+
+  <!-- Add/Edit Listing Modal -->
+  <dialog class="modal" id="listingModal">
+    <div class="modal-header">
+      <span class="modal-title" id="listingModalTitle">List an Item</span>
+      <button class="modal-close-btn" onclick="document.getElementById('listingModal').close()">&times;</button>
+    </div>
+    <form id="listingForm">
+      <input type="hidden" id="listingEditId">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Title *</label>
+          <input type="text" class="form-control" id="lTitle" placeholder="e.g. DeWalt Cordless Drill 20V" required>
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Category *</label>
+            <select class="form-control" id="lCategory" required>
+              <option value="Electronics">Electronics</option>
+              <option value="Tools">Tools</option>
+              <option value="Books">Books</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Sports">Sports</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Condition *</label>
+            <select class="form-control" id="lCondition" required>
+              <option value="New">New</option>
+              <option value="Like New">Like New</option>
+              <option value="Good">Good</option>
+              <option value="Fair">Fair</option>
+              <option value="Poor">Poor</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="form-label">Transaction Type *</label>
+            <select class="form-control" id="lType" required>
+              <option value="buy">For Sale</option>
+              <option value="rent">For Rent</option>
+              <option value="share">Free Sharing</option>
+            </select>
+          </div>
+          <div id="lPriceWrap">
+            <label class="form-label">Price / Rate ($)</label>
+            <input type="number" class="form-control" id="lPrice" placeholder="0.00" min="0" step="0.01">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location *</label>
+          <input type="text" class="form-control" id="lLocation" placeholder="e.g. New York, NY" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description *</label>
+          <textarea class="form-control" id="lDescription" placeholder="Describe the item condition, included accessories, availability…" required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline btn-md" onclick="document.getElementById('listingModal').close()">Cancel</button>
+        <button type="submit" class="btn btn-primary btn-md">Submit Listing</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toastContainer"></div>
+
+  <script src="js/common.js"></script>
+  <script src="js/marketplace.js"></script>
+  <script>
+    // Handle opening edit/create forms directly from URL parameters (redirected from dashboard)
+    window.addEventListener('load', () => {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('create')) {
+        setTimeout(() => openListingModal(), 500);
+      } else if (params.get('edit')) {
+        const id = parseInt(params.get('edit'));
+        setTimeout(() => openListingModal(id), 500);
+      }
+    });
+  </script>
+</body>
+</html>
