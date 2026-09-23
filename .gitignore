@@ -1,0 +1,23 @@
+# Local configuration — contains database credentials
+config/config.local.php
+
+# Planning documents and the proposal — kept locally, not in the repository
+doc/
+
+# Editor tooling
+.claude/
+
+# Uploaded user content (keep the folder, ignore what lands in it)
+public/assets/uploads/*
+!public/assets/uploads/.gitkeep
+
+# Editor and OS noise
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+*.swp
+*~
+
+# Logs
+*.log
