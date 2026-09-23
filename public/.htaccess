@@ -1,0 +1,17 @@
+# NexUse — Apache rewrite rules.
+#
+# Only needed when the application is served by Apache (XAMPP). PHP's built-in
+# development server uses public/router.php instead and ignores this file.
+#
+# Sends every request that is not a real file or folder to the front controller.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Never list a directory's contents.
+Options -Indexes

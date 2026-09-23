@@ -1,0 +1,23 @@
+NexUse - demo accounts
+======================
+
+These accounts are created by database/seed.sql. They are for testing and the
+demo only - they are not shown anywhere on the website.
+
+This file sits in the project root, outside public/, so the web server cannot
+serve it.
+
+Every account uses the same password:  Passw0rd!
+
+
+Email                  Password    Role            Useful for
+---------------------  ----------  --------------  ----------------------------------------------------
+admin@nexuse.lk        Passw0rd!   Administrator   Dashboard, users, categories, complaints, broadcast
+nimali@example.lk      Passw0rd!   Member          Has listings, incoming requests, and a review
+kasun@example.lk       Passw0rd!   Member          Rents out camera gear; has a complaint against them
+fathima@example.lk     Passw0rd!   Member          Donates books; has completed exchanges
+dilan@example.lk       Passw0rd!   Member          Mostly a requester; requests at several statuses
+tharindu@example.lk    Passw0rd!   Member          Has a completed donation and reviews
+
+
+Re-importing database/seed.sql resets every account back to these details.
